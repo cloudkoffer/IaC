@@ -1,0 +1,47 @@
+cluster:
+  discovery:
+    registries:
+      service:
+        disabled: true
+      kubernetes:
+        disabled: false
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+machine:
+  install:
+    disk: /dev/nvme0n1
+    image: ghcr.io/siderolabs/installer:v1.4.5
+    extraKernelArgs:
+      - cpufreq.default_governor=performance
+    # extensions:
+    #   # required by OpenEBS Jiva and cStor
+    #   - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+  kubelet:
+    extraArgs:
+      # To enable the Kubernetes Metrics Server in Talos
+      rotate-server-certificates: true
+    extraMounts:
+      # To enable OpenEBS LocalPV
+      - destination: /var/openebs/local
+        type: bind
+        source: /var/openebs/local
+        options:
+          - bind
+          - rshared
+          - rw
+  files:
+    # To enable the Kubernetes Metrics Server in Talos
+    - content: |
+        [metrics]
+          address = "0.0.0.0:11234"
+      path: /etc/cri/conf.d/20-customization.part
+      op: create
+  time:
+    servers:
+      - 0.de.pool.ntp.org
+      - 1.de.pool.ntp.org
+      - 2.de.pool.ntp.org
+      - 3.de.pool.ntp.org
