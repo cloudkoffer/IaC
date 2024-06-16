@@ -5,8 +5,8 @@ resource "talos_machine_secrets" "this" {
 data "talos_client_configuration" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   cluster_name         = var.cluster_name
-  endpoints            = var.node_data.controlplane
-  nodes                = [var.node_data.controlplane[0]]
+  endpoints            = var.nodes.controlplane
+  nodes                = [var.nodes.controlplane[0]]
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -43,7 +43,7 @@ data "talos_machine_configuration" "worker" {
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {
-  for_each = toset(var.node_data.controlplane)
+  for_each = toset(var.nodes.controlplane)
 
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
@@ -51,7 +51,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
 }
 
 resource "talos_machine_configuration_apply" "worker" {
-  for_each = toset(var.node_data.worker)
+  for_each = toset(var.nodes.worker)
 
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
@@ -60,7 +60,7 @@ resource "talos_machine_configuration_apply" "worker" {
 
 resource "talos_machine_bootstrap" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = var.node_data.controlplane[0]
+  node                 = var.nodes.controlplane[0]
 
   depends_on = [
     talos_machine_configuration_apply.controlplane,
@@ -69,5 +69,5 @@ resource "talos_machine_bootstrap" "this" {
 
 data "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = var.node_data.controlplane[0]
+  node                 = var.nodes.controlplane[0]
 }
