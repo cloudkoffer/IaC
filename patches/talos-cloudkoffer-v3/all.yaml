@@ -7,41 +7,40 @@ cluster:
         disabled: false
   network:
     cni:
+      # Use custom cni
+      # https://www.talos.dev/latest/kubernetes-guides/network/deploying-cilium/#machine-config-preparation
       name: none
   proxy:
+    # Disable kube-proxy
+    # https://www.talos.dev/latest/kubernetes-guides/network/deploying-cilium/#machine-config-preparation
     disabled: true
 machine:
   install:
     disk: /dev/nvme0n1
-    image: ghcr.io/siderolabs/installer:v1.4.5
     extraKernelArgs:
+      # Setting cpu scaling governor
+      # https://www.talos.dev/latest/learn-more/knowledge-base/#setting-cpu-scaling-governor
       - cpufreq.default_governor=performance
-    # extensions:
-    #   # required by OpenEBS Jiva and cStor
-    #   - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
   kubelet:
     extraArgs:
-      # To enable the Kubernetes Metrics Server in Talos
+      # Enable metrics server
+      # https://www.talos.dev/latest/kubernetes-guides/configuration/deploy-metrics-server/
       rotate-server-certificates: true
     extraMounts:
-      # To enable OpenEBS LocalPV
-      - destination: /var/openebs/local
+      # Enable local storage
+      # https://www.talos.dev/latest/kubernetes-guides/configuration/local-storage/
+      - destination: /var/mnt
         type: bind
-        source: /var/openebs/local
+        source: /var/mnt
         options:
           - bind
           - rshared
           - rw
   files:
-    # To enable the Kubernetes Metrics Server in Talos
+    # Expose containerd metrics
+    # https://www.talos.dev/latest/talos-guides/configuration/containerd/#exposing-metrics
     - content: |
         [metrics]
           address = "0.0.0.0:11234"
       path: /etc/cri/conf.d/20-customization.part
       op: create
-  time:
-    servers:
-      - 0.de.pool.ntp.org
-      - 1.de.pool.ntp.org
-      - 2.de.pool.ntp.org
-      - 3.de.pool.ntp.org

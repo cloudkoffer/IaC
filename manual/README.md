@@ -12,7 +12,7 @@
 - Configure environment variables.
 
   ``` shell
-  CLOUDKOFFER="v3" # v1, v2, v3
+  CLOUDKOFFER=v3 # v1, v2, v3
   CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
 
   case "${CLOUDKOFFER}" in
@@ -21,8 +21,8 @@
     v3) NUMBER_OF_NODES=10 ;;
   esac
 
-  TALOS_VERSION="v1.4.5"
-  K8S_VERSION="1.27.2"
+  TALOS_VERSION=v1.4.5
+  K8S_VERSION=1.27.2
   ```
 
 - Boot the nodes using either USB sticks or a network boot (F12).
@@ -46,40 +46,14 @@
   ```
 
   ``` shell
-  # option 1 - single step
   talosctl gen config "${CLUSTER_NAME}" https://192.168.1.101:6443 \
-    --with-secrets=secrets.yaml \
     --config-patch="@../patches/${CLUSTER_NAME}/all.yaml" \
     --config-patch-control-plane="@../patches/${CLUSTER_NAME}/controlplane.yaml" \
-    --config-patch-worker="@../patches/${CLUSTER_NAME}/worker.yaml" \
-    --install-disk=/dev/nvme0n1 \
     --install-image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
     --kubernetes-version="${K8S_VERSION}" \
     --with-docs=false \
-    --with-examples=false
-  ```
-
-  ``` shell
-  # option 2 - multiple steps
-  talosctl gen config "${CLUSTER_NAME}" https://192.168.1.101:6443 \
-    --with-secrets=secrets.yaml \
-    --install-disk=/dev/nvme0n1 \
-    --install-image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
-    --kubernetes-version="${K8S_VERSION}" \
-    --with-docs=false \
-    --with-examples=false
-  talosctl machineconfig patch controlplane.yaml \
-    --patch="@../patches/${CLUSTER_NAME}/all.yaml" \
-    --output=controlplane.yaml
-  talosctl machineconfig patch controlplane.yaml \
-    --patch="@../patches/${CLUSTER_NAME}/controlplane.yaml" \
-    --output=controlplane.yaml
-  talosctl machineconfig patch worker.yaml \
-    --patch="@../patches/${CLUSTER_NAME}/all.yaml" \
-    --output=worker.yaml
-  talosctl machineconfig patch worker.yaml \
-    --patch="@../patches/${CLUSTER_NAME}/worker.yaml" \
-    --output=worker.yaml
+    --with-examples=false \
+    --with-secrets=secrets.yaml
   ```
 
 - Configure endpoints and nodes for future talosctl commands.
@@ -164,25 +138,16 @@
 
 ## Maintenance
 
-- Configure environment variables.
-
-  ``` shell
-  CLOUDKOFFER="v3" # v1, v2, v3
-  CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
-
-  TALOS_VERSION="v1.4.5"
-  K8S_VERSION="1.27.2"
-  ```
-
-- Upgrade Talos
+- Upgrade Talos.
 
   > **INFO**: Perform the upgrade one by one for each node.
 
   ``` shell
+  TALOS_VERSION=v1.7.4
+
   talosctl upgrade \
     --image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
-    --context="${CLUSTER_NAME}" \
-    --nodes 192.168.1.x
+    --nodes=192.168.1.x
   ```
 
 - Stage-Upgrade Talos
@@ -190,23 +155,23 @@
   > **INFO**: Use if the above upgrade fails due to a process holding a file open on disk.
 
   ``` shell
+  TALOS_VERSION=v1.7.4
+
   talosctl upgrade \
     --image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
-    --stage \
-    --context="${CLUSTER_NAME}" \
-    --nodes 192.168.1.x
+    --nodes=192.168.1.x \
+    --stage
 
   talosctl reboot \
-    --wait \
-    --context="${CLUSTER_NAME}" \
-    --nodes 192.168.1.x
+    --nodes=192.168.1.x \
+    --wait
   ```
 
-- Upgrade Kubernetes
+- Upgrade Kubernetes.
 
   ``` shell
+  KUBERNETES_VERSION=1.30.1
+
   talosctl upgrade-k8s \
-    --to="${K8S_VERSION}" \
-    --context="${CLUSTER_NAME}" \
-    --nodes 192.168.1.x
+    --to="${K8S_VERSION}"
   ```
