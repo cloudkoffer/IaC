@@ -102,7 +102,7 @@ cluster:
                   - --helm-set=hubble.ui.enabled=true
                   - --helm-set=hubble.ui.ingress.enabled=true
                   - --helm-set=hubble.ui.ingress.className=true
-                  - --helm-set=hubble.ui.ingress.hosts={hubble.ck3.cluster.qaware.de}
+                  - --helm-set=hubble.ui.ingress.hosts={hubble.cluster.cloudkoffer.dev}
 machine:
   network:
     interfaces:

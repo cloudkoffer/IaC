@@ -16,7 +16,7 @@ cluster:
     disabled: true
 machine:
   install:
-    disk: /dev/nvme0n1
+    disk: /dev/nvme0n1 # /dev/sda
     extraKernelArgs:
       # Setting cpu scaling governor
       # https://www.talos.dev/latest/learn-more/knowledge-base/#setting-cpu-scaling-governor

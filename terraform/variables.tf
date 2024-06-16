@@ -1,5 +1,11 @@
-variable "cluster_name" {
-  description = "The name for the Talos cluster."
+variable "talos_version" {
+  description = "The talos version for the Talos cluster."
+  type        = string
+  nullable    = false
+}
+
+variable "kubernetes_version" {
+  description = "The kubernetes version for the Talos cluster."
   type        = string
   nullable    = false
 }
@@ -11,16 +17,4 @@ variable "nodes" {
     worker       = list(string)
   })
   nullable = false
-}
-
-variable "talos_version" {
-  description = "The talos version for the Talos cluster."
-  type        = string
-  nullable    = false
-}
-
-variable "kubernetes_version" {
-  description = "The kubernetes version for the Talos cluster."
-  type        = string
-  nullable    = false
 }

@@ -4,20 +4,20 @@ resource "talos_machine_secrets" "this" {
 
 data "talos_client_configuration" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
-  cluster_name         = var.cluster_name
+  cluster_name         = "cloudkoffer"
   endpoints            = var.nodes.controlplane
   nodes                = [var.nodes.controlplane[0]]
 }
 
 data "talos_machine_configuration" "controlplane" {
   cluster_endpoint = "https://192.168.1.101:6443"
-  cluster_name     = var.cluster_name
+  cluster_name     = "cloudkoffer"
   machine_secrets  = talos_machine_secrets.this.machine_secrets
   machine_type     = "controlplane"
 
   config_patches = [
-    file("../patches/${var.cluster_name}/controlplane.yaml"),
-    file("../patches/${var.cluster_name}/all.yaml"),
+    file("../patches/controlplane.yaml"),
+    file("../patches/all.yaml"),
   ]
 
   docs               = false
@@ -28,12 +28,12 @@ data "talos_machine_configuration" "controlplane" {
 
 data "talos_machine_configuration" "worker" {
   cluster_endpoint = "https://192.168.1.101:6443"
-  cluster_name     = var.cluster_name
+  cluster_name     = "cloudkoffer"
   machine_secrets  = talos_machine_secrets.this.machine_secrets
   machine_type     = "worker"
 
   config_patches = [
-    file("../patches/${var.cluster_name}/all.yaml"),
+    file("../patches/all.yaml"),
   ]
 
   docs               = false

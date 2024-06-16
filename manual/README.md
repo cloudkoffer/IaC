@@ -38,9 +38,9 @@
 - Create talos client and machine configuration.
 
   ``` shell
-  talosctl gen config "${CLUSTER_NAME}" "${CLUSTER_ENDPOINT}" \
-    --config-patch="@../patches/${CLUSTER_NAME}/all.yaml" \
-    --config-patch-control-plane="@../patches/${CLUSTER_NAME}/controlplane.yaml" \
+  talosctl gen config cloudkoffer https://192.168.1.101:6443 \
+    --config-patch="@../patches/all.yaml" \
+    --config-patch-control-plane="@../patches/controlplane.yaml" \
     --install-image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
     --kubernetes-version="${KUBERNETES_VERSION}" \
     --with-docs=false \
