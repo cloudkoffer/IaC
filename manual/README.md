@@ -14,6 +14,7 @@
   ``` shell
   CLOUDKOFFER=v3 # v1, v2, v3
   CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
+  CLUSTER_ENDPOINT=https://192.168.1.101:6443
 
   case "${CLOUDKOFFER}" in
     v1) NUMBER_OF_NODES=5 ;;
@@ -22,12 +23,12 @@
   esac
 
   TALOS_VERSION=v1.4.5
-  K8S_VERSION=1.27.2
+  KUBERNETES_VERSION=1.27.2
   ```
 
 - Boot the nodes using either USB sticks or a network boot (F12).
 
-- Wait until the nodes have entered `maintenance` mode.
+- Wait until the nodes have entered maintenance mode.
 
   ``` shell
   for i in {1..${NUMBER_OF_NODES}}; do
@@ -39,35 +40,27 @@
   done
   ```
 
-- Create configuration.
+- Create talos machine secrets.
 
   ``` shell
   talosctl gen secrets --output-file secrets.yaml
   ```
 
+- Create talos client and machine configuration.
+
   ``` shell
-  talosctl gen config "${CLUSTER_NAME}" https://192.168.1.101:6443 \
+  talosctl gen config "${CLUSTER_NAME}" "${CLUSTER_ENDPOINT}" \
     --config-patch="@../patches/${CLUSTER_NAME}/all.yaml" \
     --config-patch-control-plane="@../patches/${CLUSTER_NAME}/controlplane.yaml" \
     --install-image="ghcr.io/siderolabs/installer:${TALOS_VERSION}" \
-    --kubernetes-version="${K8S_VERSION}" \
+    --kubernetes-version="${KUBERNETES_VERSION}" \
     --with-docs=false \
     --with-examples=false \
     --with-secrets=secrets.yaml
-  ```
 
-- Configure endpoints and nodes for future talosctl commands.
-
-  ``` shell
-  talosctl config endpoint 192.168.1.1 192.168.1.2 192.168.1.3 --talosconfig=talosconfig
-  talosctl config node 192.168.1.1 --talosconfig=talosconfig
-  talosctl config merge talosconfig
-  ```
-
-- Configure talosctl default context.
-
-  ``` shell
-  talosctl config use-context "${CLUSTER_NAME}"
+  export TALOSCONFIG="$(pwd)/talosconfig"
+  talosctl config endpoint 192.168.1.1 192.168.1.2 192.168.1.3
+  talosctl config node 192.168.1.1
   ```
 
 <!--
@@ -82,21 +75,21 @@
 - Apply configuration to nodes.
 
   ``` shell
-  # cloudkoffer-v1, cloudkoffer-v2 and cloudkoffer-v3
-  talosctl apply-config --insecure --nodes=192.168.1.1 --file=controlplane.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.2 --file=controlplane.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.3 --file=controlplane.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.4 --file=worker.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.5 --file=worker.yaml
+  # cloudkoffer-v3, cloudkoffer-v2 and cloudkoffer-v1
+  talosctl apply-config --nodes=192.168.1.1 --file=controlplane.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.2 --file=controlplane.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.3 --file=controlplane.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.4 --file=worker.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.5 --file=worker.yaml --insecure
   ```
 
   ``` shell
-  # cloudkoffer-v2 and cloudkoffer-v3
-  talosctl apply-config --insecure --nodes=192.168.1.6 --file=worker.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.7 --file=worker.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.8 --file=worker.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.9 --file=worker.yaml
-  talosctl apply-config --insecure --nodes=192.168.1.10 --file=worker.yaml
+  # cloudkoffer-v3 and cloudkoffer-v2
+  talosctl apply-config --nodes=192.168.1.6 --file=worker.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.7 --file=worker.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.8 --file=worker.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.9 --file=worker.yaml --insecure
+  talosctl apply-config --nodes=192.168.1.10 --file=worker.yaml --insecure
   ```
 
 - Bootstrap kubernetes cluster.
@@ -114,13 +107,8 @@
 - Retrieve kubeconfig.
 
   ``` shell
-  talosctl kubeconfig
-  ```
-
-- Configure kubectl default context.
-
-  ``` shell
-  kubectl config use-context "admin@${CLUSTER_NAME}"
+  talosctl kubeconfig kubeconfig
+  export KUBECONFIG="$(pwd)/kubeconfig"
   ```
 
 <!--
@@ -137,6 +125,11 @@
 -->
 
 ## Maintenance
+
+``` shell
+export TALOSCONFIG="$(pwd)/talosconfig"
+export KUBECONFIG="$(pwd)/kubeconfig"
+```
 
 - Upgrade Talos.
 
@@ -173,5 +166,5 @@
   KUBERNETES_VERSION=1.30.1
 
   talosctl upgrade-k8s \
-    --to="${K8S_VERSION}"
+    --to="${KUBERNETES_VERSION}"
   ```
