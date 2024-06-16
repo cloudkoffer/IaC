@@ -71,14 +71,7 @@
 
   ``` shell
   terraform output -raw talosconfig > talosconfig
-  talosctl config merge talosconfig
-  rm -rf talosconfig
-  ```
-
-- Configure talosctl default context.
-
-  ``` shell
-  talosctl config use-context "${CLUSTER_NAME}"
+  export TALOSCONFIG="$(pwd)/talosconfig"
   ```
 
 - Wait until cluster is healthy.
@@ -90,13 +83,8 @@
 - Retrieve kubeconfig.
 
   ``` shell
-  talosctl kubeconfig
-  ```
-
-- Configure kubectl default context.
-
-  ``` shell
-  kubectl config use-context "admin@${CLUSTER_NAME}"
+  terraform output -raw kubeconfig_raw > kubeconfig
+  export KUBECONFIG="$(pwd)/kubeconfig"
   ```
 
 <!--
