@@ -3,10 +3,13 @@
 
 provider "registry.terraform.io/siderolabs/talos" {
   version     = "0.2.0"
-  constraints = "~> 0.2.0"
+  constraints = "0.2.0"
   hashes = [
+    "h1:+U9gMyFAgTCNptgW1+55QOu7ZaPpEZMWprZVYgddgZQ=",
+    "h1:Bdz1cmiBYPe+2JKrhCVwh2ozEx1QShD93q5jVYECsLE=",
     "h1:N+FcjpsDPPs772sotGtqY1Ri2lsC5QaIkARf587F2O4=",
     "h1:N895p8EraAyAbGYYpFQGPSC6+6C8pAtC5QVlAjjTFtE=",
+    "h1:eznJzC/McanWejwIDkwk8BQ2fIi/Vo6a/FbsZOUmch4=",
     "zh:06dd4c833ad51f103233be8ef31e044fd655def59354ca8f45140e52e8b671bc",
     "zh:0730971d0ad355f38c886916d66f19d34e02efb5bff526d9475d6a90e3c786ad",
     "zh:0fa82a384b25a58b65523e0ea4768fa1212b1f5cfc0c9379d31162454fedcc9d",

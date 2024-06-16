@@ -70,5 +70,4 @@ resource "talos_machine_bootstrap" "this" {
 data "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = var.node_data.controlplane[0]
-  wait                 = true
 }

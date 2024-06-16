@@ -7,7 +7,6 @@
 - terraform
 - talosctl
 - kubectl
-- op
 
 ## Installation
 
@@ -41,19 +40,7 @@
 - Initialise Terraform state
 
   ``` shell
-  GITLAB_USER="$(op read "op://QAware-Showcases/GitLab - Talos - Project Access Token/username" --account=qawaregmbh)"
-  GITLAB_TOKEN="$(op read "op://QAware-Showcases/GitLab - Talos - Project Access Token/password" --account=qawaregmbh)"
-
-  terraform init \
-    -upgrade \
-    -backend-config="address=https://gitlab.com/api/v4/projects/43783075/terraform/state/${CLUSTER_NAME}" \
-    -backend-config="lock_address=https://gitlab.com/api/v4/projects/43783075/terraform/state/${CLUSTER_NAME}/lock" \
-    -backend-config="unlock_address=https://gitlab.com/api/v4/projects/43783075/terraform/state/${CLUSTER_NAME}/lock" \
-    -backend-config="username=${GITLAB_USER}" \
-    -backend-config="password=${GITLAB_TOKEN}" \
-    -backend-config="lock_method=POST" \
-    -backend-config="unlock_method=DELETE" \
-    -backend-config="retry_wait_min=5"
+  terraform init -upgrade
   ```
 
 - Check and correct Terraform formatting if necessary.
