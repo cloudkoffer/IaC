@@ -1,4 +1,4 @@
-# Talos / Deployment Talos / Terraform
+# Provisioning / Kubernetes / Talos / Terraform
 
 ## Prerequisite
 

@@ -1,4 +1,4 @@
-# Talos / Deployment Talos / Manual
+# Provisioning / Kubernetes / Talos / Manual
 
 ## Prerequisite
 
