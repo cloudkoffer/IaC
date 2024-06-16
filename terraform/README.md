@@ -13,8 +13,7 @@
 - Configure environment variables.
 
   ``` shell
-  CLOUDKOFFER=v3 # v1, v2, v3
-  CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
+  vi .envrc
   ```
 
 - Boot the nodes using either USB sticks or a network boot (F12).
