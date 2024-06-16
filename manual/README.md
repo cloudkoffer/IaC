@@ -12,18 +12,7 @@
 - Configure environment variables.
 
   ``` shell
-  CLOUDKOFFER=v3 # v1, v2, v3
-  CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
-  CLUSTER_ENDPOINT=https://192.168.1.101:6443
-
-  case "${CLOUDKOFFER}" in
-    v1) NUMBER_OF_NODES=5 ;;
-    v2) NUMBER_OF_NODES=10 ;;
-    v3) NUMBER_OF_NODES=10 ;;
-  esac
-
-  TALOS_VERSION=v1.4.5
-  KUBERNETES_VERSION=1.27.2
+  vi .envrc
   ```
 
 - Boot the nodes using either USB sticks or a network boot (F12).
@@ -31,7 +20,7 @@
 - Wait until the nodes have entered maintenance mode.
 
   ``` shell
-  for i in {1..${NUMBER_OF_NODES}}; do
+  for i in {1..10}; do
     echo -n "Node ${i}: "
     talosctl get machinestatus \
       --insecure \
@@ -75,21 +64,19 @@
 - Apply configuration to nodes.
 
   ``` shell
-  # cloudkoffer-v3, cloudkoffer-v2 and cloudkoffer-v1
-  talosctl apply-config --nodes=192.168.1.1 --file=controlplane.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.2 --file=controlplane.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.3 --file=controlplane.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.4 --file=worker.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.5 --file=worker.yaml --insecure
-  ```
+  for node in "${NODES_CONTROLPLANE[@]}"; do
+    talosctl apply-config \
+      --nodes="${node}" \
+      --file=controlplane.yaml \
+      --insecure
+  done
 
-  ``` shell
-  # cloudkoffer-v3 and cloudkoffer-v2
-  talosctl apply-config --nodes=192.168.1.6 --file=worker.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.7 --file=worker.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.8 --file=worker.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.9 --file=worker.yaml --insecure
-  talosctl apply-config --nodes=192.168.1.10 --file=worker.yaml --insecure
+  for node in "${NODES_WORKER[@]}"; do
+    talosctl apply-config \
+      --nodes="${node}" \
+      --file=worker.yaml \
+      --insecure
+  done
   ```
 
 - Bootstrap kubernetes cluster.

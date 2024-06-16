@@ -4,12 +4,6 @@ variable "cluster_name" {
   nullable    = false
 }
 
-variable "cluster_endpoint" {
-  description = "The endpoint for the Talos cluster."
-  type        = string
-  nullable    = false
-}
-
 variable "nodes" {
   description = "A map of node data."
   type = object({

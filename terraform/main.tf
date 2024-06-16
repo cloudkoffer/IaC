@@ -10,7 +10,7 @@ data "talos_client_configuration" "this" {
 }
 
 data "talos_machine_configuration" "controlplane" {
-  cluster_endpoint = var.cluster_endpoint
+  cluster_endpoint = "https://192.168.1.101:6443"
   cluster_name     = var.cluster_name
   machine_secrets  = talos_machine_secrets.this.machine_secrets
   machine_type     = "controlplane"
@@ -27,7 +27,7 @@ data "talos_machine_configuration" "controlplane" {
 }
 
 data "talos_machine_configuration" "worker" {
-  cluster_endpoint = var.cluster_endpoint
+  cluster_endpoint = "https://192.168.1.101:6443"
   cluster_name     = var.cluster_name
   machine_secrets  = talos_machine_secrets.this.machine_secrets
   machine_type     = "worker"

@@ -22,13 +22,7 @@
 - Wait until the nodes have entered `maintenance` mode.
 
   ``` shell
-  case "${CLOUDKOFFER}" in
-    v1) NUMBER_OF_NODES=5 ;;
-    v2) NUMBER_OF_NODES=10 ;;
-    v3) NUMBER_OF_NODES=10 ;;
-  esac
-
-  for node in {1..${NUMBER_OF_NODES}}; do
+  for node in {1..10}; do
     echo -n "Node ${node}: "
     talosctl get machinestatus \
       --nodes="192.168.1.${node}" \
@@ -58,13 +52,13 @@
 - Execute a Terraform plan.
 
   ``` shell
-  terraform plan -var-file="configs/${CLUSTER_NAME}.tfvars"
+  terraform plan
   ```
 
 - Execute a Terraform apply.
 
   ``` shell
-  terraform apply -var-file="configs/${CLUSTER_NAME}.tfvars"
+  terraform apply
   ```
 
 - Retrieve talosconfig.
@@ -101,6 +95,11 @@
 -->
 
 ## Maintenance
+
+``` shell
+export TALOSCONFIG="$(pwd)/talosconfig"
+export KUBECONFIG="$(pwd)/kubeconfig"
+```
 
 - Upgrade Talos.
 
