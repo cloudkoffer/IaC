@@ -15,12 +15,6 @@
   ``` shell
   CLOUDKOFFER=v3 # v1, v2, v3
   CLUSTER_NAME="talos-cloudkoffer-${CLOUDKOFFER}"
-
-  case "${CLOUDKOFFER}" in
-    v1) NUMBER_OF_NODES=5 ;;
-    v2) NUMBER_OF_NODES=10 ;;
-    v3) NUMBER_OF_NODES=10 ;;
-  esac
   ```
 
 - Boot the nodes using either USB sticks or a network boot (F12).
@@ -28,11 +22,17 @@
 - Wait until the nodes have entered `maintenance` mode.
 
   ``` shell
-  for i in {1..${NUMBER_OF_NODES}}; do
-    echo -n "Node ${i}: "
+  case "${CLOUDKOFFER}" in
+    v1) NUMBER_OF_NODES=5 ;;
+    v2) NUMBER_OF_NODES=10 ;;
+    v3) NUMBER_OF_NODES=10 ;;
+  esac
+
+  for node in {1..${NUMBER_OF_NODES}}; do
+    echo -n "Node ${node}: "
     talosctl get machinestatus \
-      --nodes="192.168.1.${i}" \
-      --output="jsonpath='{.spec.stage}'" \
+      --nodes="192.168.1.${node}" \
+      --output=jsonpath='{.spec.stage}' \
       --insecure
   done
   ```
